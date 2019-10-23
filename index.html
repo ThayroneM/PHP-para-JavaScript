@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Relogio</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+</head>
+<body>
+    
+    <div class="center text-align-center" style="padding: 10%;">
+
+        <div class="row">
+            <h3 id="horas"> 00</h3>
+            <h3 id="pontos"> : </h3>
+            <h3 id="minutos">00</h3>
+            <h3 id="pontos"> : </h3>
+            <h3 id="segundos">00</h3>
+        </div>    
+
+    </div>
+
+    <script type="text/javascript">
+
+        var evtSource = new EventSource('enviarDados.php');
+        let segundos
+        
+        evtSource.onmessage = function(e) {
+            console.log("mensagem: "+e.data);
+
+            var textoSegundos = document.getElementById("segundos");
+            var textoMinutos = document.getElementById("minutos");
+            var textoHoras = document.getElementById("horas");
+
+            if(Number(textoSegundos.textContent) < 60){
+                let aux = Number(textoSegundos.textContent) + Number(e.data);
+                textoSegundos.textContent = aux;
+
+            }else{
+                textoSegundos.textContent = 00;
+
+                if(Number(textoMinutos.textContent) < 60){
+                    let aux = Number(textoMinutos.textContent) + Number(e.data);
+                    textoMinutos.textContent = aux;
+                }else{
+
+                    textoMinutos.textContent = 00;
+                    if(Number(textoHoras.textContent) < 60){
+                        let aux = Number(textoHoras.textContent) + Number(e.data);
+                        textoHoras.textContent = aux;
+                    }else{
+                        textoHoras.textContent = 00; 
+                    }
+                }
+            }
+        };
+        evtSource.onerror = function() {
+            console.log("EventSource falhou.");
+        };
+
+    </script>
+</body>
+
